@@ -306,3 +306,223 @@ a.desc:after {
   font-size: 1.5rem;
   line-height: 1;
 }
+
+/* ------------------------------------------------------------------
+   AJAX CRUD Global Styling – Modern Card & Table
+   ------------------------------------------------------------------ */
+
+/* ----- Grid Panel (Card) ----- */
+.panel {
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  background: white;
+  border: none;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+.panel:hover {
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+}
+.panel-heading {
+  background: linear-gradient(135deg, #198754 0%, #0d5c39 100%);
+  padding: 1rem 1.5rem;
+  border-bottom: none;
+}
+.panel-heading .panel-title {
+  color: white;
+  font-weight: 600;
+  font-size: 1.2rem;
+  letter-spacing: -0.2px;
+}
+.panel-heading .panel-title i {
+  margin-right: 8px;
+}
+.panel-body {
+  padding: 1.5rem;
+  background: white;
+}
+.panel-footer {
+  background: #f8f9fa;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e9ecef;
+}
+
+/* ----- Toolbar ----- */
+.kv-grid-toolbar {
+  /* margin-bottom: 1.2rem; */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.kv-grid-toolbar .btn {
+  border-radius: 40px;
+  padding: 0.4rem 1.2rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.kv-grid-toolbar .btn-outline-primary {
+  border-color: #198754;
+  color: #198754;
+}
+.kv-grid-toolbar .btn-outline-primary:hover {
+  background: #198754;
+  border-color: #198754;
+  color: white;
+}
+.kv-grid-toolbar .btn-outline-success {
+  border-color: #0f5132;
+  color: #0f5132;
+}
+.kv-grid-toolbar .btn-outline-success:hover {
+  background: #0f5132;
+  color: white;
+}
+.kv-grid-toolbar .btn-outline-danger {
+  border-color: #dc3545;
+  color: #dc3545;
+}
+.kv-grid-toolbar .btn-outline-danger:hover {
+  background: #dc3545;
+  color: white;
+}
+
+/* ----- Table Styles ----- */
+.kv-grid-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.9rem;
+}
+.kv-grid-table thead th {
+  background: #f1f5f9;
+  color: #1e293b;
+  font-weight: 600;
+  padding: 0.9rem 0;
+  border-bottom: 2px solid #e2e8f0;
+  vertical-align: middle;
+}
+.kv-grid-table tbody td {
+  /* padding: 0.8rem 0.75rem; */
+  vertical-align: middle;
+  border-bottom: 1px solid #e9ecef;
+  color: #334155;
+}
+.kv-grid-table tbody tr:hover td {
+  background: #f8fafc;
+}
+/* Zebra striping (optional) */
+.kv-grid-table tbody tr:nth-child(even) td {
+  background: #fdfdfd;
+}
+/* Action buttons inside cells */
+.kv-grid-table .action-column .btn {
+  border-radius: 30px;
+  /* padding: 0.2rem 0.8rem; */
+  margin: 0 2px;
+  font-size: 0.75rem;
+}
+
+/* ----- Bulk Delete Widget ----- */
+.bulk-actions {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  justify-content: flex-end;
+}
+.bulk-actions .btn-danger {
+  border-radius: 40px;
+  /* padding: 0.4rem 1.2rem; */
+  background: #dc3545;
+  border: none;
+}
+.bulk-actions .btn-danger:hover {
+  background: #bb2d3b;
+}
+
+/* ----- Search Widget (SearchRecord) ----- */
+.search-record-wrapper {
+  margin-bottom: 1.2rem;
+}
+.search-record-wrapper .form-control {
+  border-radius: 40px;
+  padding: 0.5rem 1rem;
+  border: 1px solid #ced4da;
+  background: white;
+  transition: all 0.2s;
+}
+.search-record-wrapper .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.2);
+}
+.search-record-wrapper .input-group-text {
+  background: white;
+  border-radius: 40px 0 0 40px;
+  border-right: none;
+}
+/* If search uses a button */
+.search-record-wrapper .btn {
+  border-radius: 0 40px 40px 0;
+  background: #198754;
+  border-color: #198754;
+  color: white;
+}
+.search-record-wrapper .btn:hover {
+  background: #0f5132;
+}
+
+/* ----- Modal (already defined but keep consistent) ----- */
+.modal-content {
+  border-radius: 20px !important;
+  border: none;
+  box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.125);
+  overflow: hidden;
+}
+.modal-header {
+  background: linear-gradient(135deg, #198754 0%, #0d5c39 100%);
+  color: white;
+  border-radius: 20px 20px 0 0;
+  overflow: hidden;
+}
+.modal-footer .btn-primary {
+  background: #198754;
+  border-color: #198754;
+  border-radius: 30px;
+  padding: 0.4rem 1.2rem;
+}
+.modal-footer .btn-secondary {
+  border-radius: 30px;
+}
+
+/* ----- Responsive adjustments ----- */
+@media (max-width: 768px) {
+  .panel-body {
+    padding: 1rem;
+  }
+  .kv-grid-table th,
+  .kv-grid-table td {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
+  .kv-grid-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .kv-grid-toolbar .btn {
+    text-align: center;
+  }
+}
+
+.pjax-loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
