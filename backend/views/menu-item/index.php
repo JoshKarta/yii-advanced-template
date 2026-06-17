@@ -18,45 +18,56 @@ CrudAsset::register($this);
 ?>
 <div class="menu-item-index">
     <div id="ajaxCrudDatatable">
-        <?=GridView::widget([
+        <?= GridView::widget([
             'id' => 'crud-datatable',
             'dataProvider' => $dataProvider,
-            'filterModel' => $searchModel,
+            // 'filterModel' => $searchModel,
             'pjax' => true,
-            'columns' => require(__DIR__.'/_columns.php'),
+            'columns' => require(__DIR__ . '/_columns.php'),
             'toolbar' => [
-                ['content'=>
-                    Html::a(Yii::t('yii2-ajaxcrud', 'Create New'), ['create'],
-                    ['role' => 'modal-remote', 'title' => Yii::t('yii2-ajaxcrud', 'Create New').' Menu Items','class' => 'btn btn-outline-primary']).
-                    Html::a('<i class="fa fa-redo"></i>', [''],
-                    ['data-pjax' => 1, 'class' => 'btn btn-outline-success', 'title' => Yii::t('yii2-ajaxcrud', 'Reset Grid')]).
-                    '{toggleData}'.
-                    '{export}'
+                [
+                    'content' =>
+                        Html::a(
+                            Yii::t('yii2-ajaxcrud', 'Create New'),
+                            ['create'],
+                            ['role' => 'modal-remote', 'title' => Yii::t('yii2-ajaxcrud', 'Create New') . ' Menu Items', 'class' => 'btn btn-outline-primary']
+                        ) .
+                        Html::a(
+                            '<i class="fa fa-redo"></i>',
+                            [''],
+                            ['data-pjax' => 1, 'class' => 'btn btn-outline-success', 'title' => Yii::t('yii2-ajaxcrud', 'Reset Grid')]
+                        ) .
+                        '{toggleData}' .
+                        '{export}'
                 ],
-            ],          
-            'striped' => true,
+            ],
+            'striped' => false,
+            'bordered' => false,
             'hover' => true,
             'condensed' => true,
-            'responsive' => true,          
+            'responsive' => true,
             'panel' => [
-                'type' => 'default', 
-                'heading' => '<i class="fa fa-list"></i> <b>'.$this->title.'</b>',
-                'before' => '<em>* '.Yii::t('yii2-ajaxcrud', 'Resize Column').'</em>',
+                'type' => 'default',
+                'heading' => '<i class="fa fa-list"></i> <b>' . $this->title . '</b>',
+                'before' => '<em>* ' . Yii::t('yii2-ajaxcrud', 'Resize Column') . '</em>',
                 'after' => BulkButtonWidget::widget([
-                    'buttons' => Html::a('<i class="fa fa-trash"></i>&nbsp; '.Yii::t('yii2-ajaxcrud', 'Delete All'),
-                        ["bulkdelete"] ,
+                    'buttons' => Html::a(
+                        '<i class="fa fa-trash"></i>&nbsp; ' . Yii::t('yii2-ajaxcrud', 'Delete All'),
+                        ["bulkdelete"],
                         [
                             'class' => 'btn btn-danger btn-xs',
                             'role' => 'modal-remote-bulk',
-                            'data-confirm' => false, 'data-method' => false,// for overide yii data api
+                            'data-confirm' => false,
+                            'data-method' => false,// for overide yii data api
                             'data-request-method' => 'post',
                             'data-confirm-title' => Yii::t('yii2-ajaxcrud', 'Delete'),
                             'data-confirm-message' => Yii::t('yii2-ajaxcrud', 'Delete Confirm')
-                        ]),
-                ]).                        
-                '<div class="clearfix"></div>',
+                        ]
+                    ),
+                ]) .
+                    '<div class="clearfix"></div>',
             ]
-        ])?>
+        ]) ?>
     </div>
 </div>
 <?php Modal::begin([
@@ -70,5 +81,5 @@ CrudAsset::register($this);
     "options" => [
         "tabindex" => false
     ]
-])?>
+]) ?>
 <?php Modal::end(); ?>
