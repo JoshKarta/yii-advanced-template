@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'systemName' => 'Yii Advanced Template / Josh',
     'adminEmail' => 'admin@example.com',
     'supportEmail' => 'support@example.com',
     'senderEmail' => 'noreply@example.com',
