@@ -1,0 +1,20 @@
+CREATE TABLE `menu_item` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `label` varchar(255) NOT NULL,
+  `url` varchar(255) DEFAULT NULL,
+  `icon` varchar(100) DEFAULT NULL,
+  `icon_type` varchar(20) DEFAULT NULL,
+  `parent_id` int unsigned DEFAULT NULL,
+  `location` varchar(50) NOT NULL DEFAULT 'backend',
+  `sort_order` int unsigned DEFAULT '0',
+  `target` varchar(20) DEFAULT NULL,
+  `heading` tinyint(1) DEFAULT '0',
+  `visible` tinyint(1) DEFAULT '1',
+  `only_developers` tinyint(1) DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `visible_to_roles` json DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `parent_id_idx` (`parent_id`),
+  CONSTRAINT `fk_menu_item_parent` FOREIGN KEY (`parent_id`) REFERENCES `menu_item` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
