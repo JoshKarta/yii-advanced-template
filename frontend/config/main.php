@@ -14,6 +14,11 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
+    'modules' => [
+        'gridview' => [
+            'class' => '\kartik\grid\Module'
+        ]
+    ],
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',
@@ -45,7 +50,15 @@ return [
             'rules' => [
             ],
         ],
-
+        'i18n' => [
+            'translations' => [
+                'yii2-ajaxcrud' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@yii2ajaxcrud/ajaxcrud/messages',
+                    'sourceLanguage' => 'en',
+                ],
+            ]
+        ]
     ],
     'params' => $params,
 ];
