@@ -23,6 +23,12 @@ return [
             'baseUrl' => '/backoffice',
             'csrfParam' => '_csrf-backend'
         ],
+        'urlManager' => [
+            'enablePrettyUrl' => false,
+            'showScriptName' => true,
+            'rules' => [
+            ],
+        ],
         'user' => [
             'identityClass' => \common\models\User::class,
             'enableAutoLogin' => true,
@@ -44,14 +50,6 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
-        'urlManager' => [
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'rules' => [
-            ],
-        ],
-        */
         'i18n' => [
             'translations' => [
                 'yii2-ajaxcrud' => [

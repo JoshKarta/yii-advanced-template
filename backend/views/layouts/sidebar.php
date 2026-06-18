@@ -47,7 +47,7 @@ function buildMenuTree($items, $parentId = null)
                 if ($item->url == '/') {
                     $menuNode['url'] = Url::home();      // respects Yii::$app->homeUrl
                 } elseif ($item->url) {
-                    $menuNode['url'] = Url::to($item->url);
+                    $menuNode['url'] = $currentLocation == "backend" ? Yii::$app->request->baseUrl . '/index.php?r=' . ltrim($item->url, '/') : Url::to('/' . ltrim($item->url, '/'));
                 } else {
                     $menuNode['url'] = '#';
                 }
