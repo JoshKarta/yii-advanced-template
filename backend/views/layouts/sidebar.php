@@ -14,7 +14,7 @@ $cacheKey = 'menu_items_' . $currentLocation;
 /**
  * Recursively build the nested menu tree.
  */
-function buildMenuTree($items, $parentId = null)
+function buildMenuTree($items, $parentId = null, $currentLocation = null)
 {
     $result = [];
     foreach ($items as $item) {
@@ -64,7 +64,7 @@ function buildMenuTree($items, $parentId = null)
             }
 
             // Recursively fetch children
-            $children = buildMenuTree($items, $item->id);
+            $children = buildMenuTree($items, $item->id, $currentLocation);
             if (!empty($children)) {
                 $menuNode['items'] = $children;
             }
@@ -91,7 +91,7 @@ if ($menuItems === false) {
         ->orderBy(['sort_order' => SORT_ASC, 'id' => SORT_ASC])
         ->all();
 
-    $menuItems = buildMenuTree($records);
+    $menuItems = buildMenuTree($records, null, $currentLocation);
     // Cache for 1 hour (or you can use a database dependency for automatic invalidation)
     Yii::$app->cache->set($cacheKey, $menuItems, 3600);
 }
