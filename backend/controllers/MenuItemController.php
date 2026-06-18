@@ -37,7 +37,7 @@ class MenuItemController extends Controller
      * @return mixed
      */
     public function actionIndex()
-    {    
+    {
         $searchModel = new MenuItemSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -54,22 +54,19 @@ class MenuItemController extends Controller
      * @return mixed
      */
     public function actionView($id)
-    {   
+    {
         $request = Yii::$app->request;
-        if($request->isAjax)
-        {
+        if ($request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             return [
-                'title' => "MenuItem #".$id,
-                'content' =>$this->renderAjax('view', [
+                'title' => "MenuItem #" . $id,
+                'content' => $this->renderAjax('view', [
                     'model' => $this->findModel($id),
                 ]),
-                'footer' => Html::button(Yii::t('yii2-ajaxcrud', 'Close'), ['class' => 'btn btn-default pull-left', 'data-bs-dismiss' => 'modal']).
+                'footer' => Html::button(Yii::t('yii2-ajaxcrud', 'Close'), ['class' => 'btn btn-default pull-left', 'data-bs-dismiss' => 'modal']) .
                     Html::a(Yii::t('yii2-ajaxcrud', 'Update'), ['update', 'id' => $id], ['class' => 'btn btn-primary', 'role' => 'modal-remote'])
             ];
-        }
-        else
-        {
+        } else {
             return $this->render('view', [
                 'model' => $this->findModel($id),
             ]);
@@ -85,64 +82,53 @@ class MenuItemController extends Controller
     public function actionCreate()
     {
         $request = Yii::$app->request;
-        $model = new MenuItem();  
+        $model = new MenuItem();
 
-        if($request->isAjax)
-        {
+        if ($request->isAjax) {
             /*
-            *   Process for ajax request
-            */
+             *   Process for ajax request
+             */
             Yii::$app->response->format = Response::FORMAT_JSON;
-            if($request->isGet)
-            {
+            if ($request->isGet) {
                 return [
-                    'title' => Yii::t('yii2-ajaxcrud', 'Create New')." MenuItem",
+                    'title' => Yii::t('yii2-ajaxcrud', 'Create New') . " MenuItem",
                     'content' => $this->renderAjax('create', [
                         'model' => $model,
                     ]),
-                    'footer' => Html::button(Yii::t('yii2-ajaxcrud', 'Close'), ['class' => 'btn btn-default pull-left', 'data-bs-dismiss' => 'modal']).
+                    'footer' => Html::button(Yii::t('yii2-ajaxcrud', 'Close'), ['class' => 'btn btn-default pull-left', 'data-bs-dismiss' => 'modal']) .
                         Html::button(Yii::t('yii2-ajaxcrud', 'Create'), ['class' => 'btn btn-primary', 'type' => 'submit'])
                 ];
-            }
-            else if($model->load($request->post()) && $model->save())
-            {
+            } else if ($model->load($request->post()) && $model->save()) {
                 return [
                     'forceReload' => '#crud-datatable-pjax',
-                    'title' => Yii::t('yii2-ajaxcrud', 'Create New')." MenuItem",
-                    'content' => '<span class="text-success">'.Yii::t('yii2-ajaxcrud', 'Create').' MenuItem '.Yii::t('yii2-ajaxcrud', 'Success').'</span>',
-                    'footer' =>  Html::button(Yii::t('yii2-ajaxcrud', 'Close'), ['class' => 'btn btn-default pull-left', 'data-bs-dismiss' => 'modal']).
+                    'title' => Yii::t('yii2-ajaxcrud', 'Create New') . " MenuItem",
+                    'content' => '<span class="text-success">' . Yii::t('yii2-ajaxcrud', 'Create') . ' MenuItem ' . Yii::t('yii2-ajaxcrud', 'Success') . '</span>',
+                    'footer' => Html::button(Yii::t('yii2-ajaxcrud', 'Close'), ['class' => 'btn btn-default pull-left', 'data-bs-dismiss' => 'modal']) .
                         Html::a(Yii::t('yii2-ajaxcrud', 'Create More'), ['create'], ['class' => 'btn btn-primary', 'role' => 'modal-remote'])
                 ];
-            }
-            else
-            {
+            } else {
                 return [
-                    'title' => Yii::t('yii2-ajaxcrud', 'Create New')." MenuItem",
+                    'title' => Yii::t('yii2-ajaxcrud', 'Create New') . " MenuItem",
                     'content' => $this->renderAjax('create', [
                         'model' => $model,
                     ]),
-                    'footer' => Html::button(Yii::t('yii2-ajaxcrud', 'Close'), ['class' => 'btn btn-default pull-left', 'data-bs-dismiss' => 'modal']).
+                    'footer' => Html::button(Yii::t('yii2-ajaxcrud', 'Close'), ['class' => 'btn btn-default pull-left', 'data-bs-dismiss' => 'modal']) .
                         Html::button(Yii::t('yii2-ajaxcrud', 'Save'), ['class' => 'btn btn-primary', 'type' => 'submit'])
                 ];
             }
-        }
-        else
-        {
+        } else {
             /*
-            *   Process for non-ajax request
-            */
-            if ($model->load($request->post()) && $model->save())
-            {
+             *   Process for non-ajax request
+             */
+            if ($model->load($request->post()) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
-            }
-            else
-            {
+            } else {
                 return $this->render('create', [
                     'model' => $model,
                 ]);
             }
         }
-       
+
     }
 
     /**
@@ -155,60 +141,49 @@ class MenuItemController extends Controller
     public function actionUpdate($id)
     {
         $request = Yii::$app->request;
-        $model = $this->findModel($id);       
+        $model = $this->findModel($id);
 
-        if($request->isAjax)
-        {
+        if ($request->isAjax) {
             /*
-            *   Process for ajax request
-            */
+             *   Process for ajax request
+             */
             Yii::$app->response->format = Response::FORMAT_JSON;
-            if($request->isGet)
-            {
+            if ($request->isGet) {
                 return [
-                    'title' => Yii::t('yii2-ajaxcrud', 'Update')." MenuItem #".$id,
+                    'title' => Yii::t('yii2-ajaxcrud', 'Update') . " MenuItem #" . $id,
                     'content' => $this->renderAjax('update', [
                         'model' => $model,
                     ]),
-                    'footer' => Html::button(Yii::t('yii2-ajaxcrud', 'Close'), ['class' => 'btn btn-default pull-left', 'data-bs-dismiss' => 'modal']).
+                    'footer' => Html::button(Yii::t('yii2-ajaxcrud', 'Close'), ['class' => 'btn btn-default pull-left', 'data-bs-dismiss' => 'modal']) .
                         Html::button(Yii::t('yii2-ajaxcrud', 'Save'), ['class' => 'btn btn-primary', 'type' => 'submit'])
-                ];   
-            }
-            else if($model->load($request->post()) && $model->save())
-            {
+                ];
+            } else if ($model->load($request->post()) && $model->save()) {
                 return [
                     'forceReload' => '#crud-datatable-pjax',
-                    'title' => "MenuItem #".$id,
+                    'title' => "MenuItem #" . $id,
                     'content' => $this->renderAjax('view', [
                         'model' => $model,
                     ]),
-                    'footer' => Html::button(Yii::t('yii2-ajaxcrud', 'Close'), ['class' => 'btn btn-default pull-left', 'data-bs-dismiss' => 'modal']).
-                        Html::a(Yii::t('yii2-ajaxcrud', 'Update'), ['update', 'id' => $id],['class' => 'btn btn-primary', 'role' => 'modal-remote'])
+                    'footer' => Html::button(Yii::t('yii2-ajaxcrud', 'Close'), ['class' => 'btn btn-default pull-left', 'data-bs-dismiss' => 'modal']) .
+                        Html::a(Yii::t('yii2-ajaxcrud', 'Update'), ['update', 'id' => $id], ['class' => 'btn btn-primary', 'role' => 'modal-remote'])
                 ];
-            }
-            else
-            {
-                 return [
-                    'title' => Yii::t('yii2-ajaxcrud', 'Update')." MenuItem #".$id,
+            } else {
+                return [
+                    'title' => Yii::t('yii2-ajaxcrud', 'Update') . " MenuItem #" . $id,
                     'content' => $this->renderAjax('update', [
                         'model' => $model,
                     ]),
-                    'footer' => Html::button(Yii::t('yii2-ajaxcrud', 'Close'), ['class' => 'btn btn-default pull-left', 'data-bs-dismiss' => 'modal']).
+                    'footer' => Html::button(Yii::t('yii2-ajaxcrud', 'Close'), ['class' => 'btn btn-default pull-left', 'data-bs-dismiss' => 'modal']) .
                         Html::button(Yii::t('yii2-ajaxcrud', 'Save'), ['class' => 'btn btn-primary', 'type' => 'submit'])
                 ];
             }
-        }
-        else
-        {
+        } else {
             /*
-            *   Process for non-ajax request
-            */
-            if ($model->load($request->post()) && $model->save())
-            {
+             *   Process for non-ajax request
+             */
+            if ($model->load($request->post()) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
-            }
-            else
-            {
+            } else {
                 return $this->render('update', [
                     'model' => $model,
                 ]);
@@ -228,24 +203,21 @@ class MenuItemController extends Controller
         $request = Yii::$app->request;
         $this->findModel($id)->delete();
 
-        if($request->isAjax)
-        {
+        if ($request->isAjax) {
             /*
-            *   Process for ajax request
-            */
+             *   Process for ajax request
+             */
             Yii::$app->response->format = Response::FORMAT_JSON;
-            return ['forceClose'=>true,'forceReload'=>'#crud-datatable-pjax'];
-        }
-        else
-        {
+            return ['forceClose' => true, 'forceReload' => '#crud-datatable-pjax'];
+        } else {
             /*
-            *   Process for non-ajax request
-            */
+             *   Process for non-ajax request
+             */
             return $this->redirect(['index']);
         }
     }
 
-     /**
+    /**
      * Delete multiple existing MenuItem model.
      * For ajax request will return json object
      * and for non-ajax request if deletion is successful, the browser will be redirected to the 'index' page.
@@ -253,28 +225,24 @@ class MenuItemController extends Controller
      * @return mixed
      */
     public function actionBulkdelete()
-    {        
+    {
         $request = Yii::$app->request;
-        $pks = explode(',', $request->post( 'pks' )); // Array or selected records primary keys
-        foreach ( $pks as $pk )
-        {
+        $pks = explode(',', $request->post('pks')); // Array or selected records primary keys
+        foreach ($pks as $pk) {
             $model = $this->findModel($pk);
             $model->delete();
         }
 
-        if($request->isAjax)
-        {
+        if ($request->isAjax) {
             /*
-            *   Process for ajax request
-            */
+             *   Process for ajax request
+             */
             Yii::$app->response->format = Response::FORMAT_JSON;
-            return ['forceClose'=>true,'forceReload'=>'#crud-datatable-pjax'];
-        }
-        else
-        {
+            return ['forceClose' => true, 'forceReload' => '#crud-datatable-pjax'];
+        } else {
             /*
-            *   Process for non-ajax request
-            */
+             *   Process for non-ajax request
+             */
             return $this->redirect(['index']);
         }
     }
@@ -288,13 +256,62 @@ class MenuItemController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = MenuItem::findOne($id)) !== null)
-        {
+        if (($model = MenuItem::findOne($id)) !== null) {
             return $model;
-        }
-        else
-        {
+        } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function actionUpdateOrder()
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $items = Yii::$app->request->post('items', []);
+
+        if (empty($items)) {
+            return ['success' => false, 'message' => 'No order data received'];
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            foreach ($items as $item) {
+                MenuItem::updateAll(
+                    [
+                        'sort_order' => $item['sort_order'],
+                        'parent_id' => $item['parent_id']
+                    ],
+                    ['id' => $item['id']]
+                );
+            }
+
+            $transaction->commit();
+
+            // Clear both backend and frontend caches
+            Yii::$app->cache->delete('menu_items_backend');
+            Yii::$app->cache->delete('menu_items_frontend');
+
+            return ['success' => true, 'message' => 'Order updated successfully'];
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            return ['success' => false, 'message' => 'Failed to update order: ' . $e->getMessage()];
+        }
+    }
+
+    /**
+     * Displays sorting interface for menu items
+     * @return string
+     */
+    public function actionSort()
+    {
+        // Get all parent items
+        $parentItems = MenuItem::find()
+            ->where(['parent_id' => null])
+            ->orderBy(['sort_order' => SORT_ASC])
+            ->all();
+
+        return $this->render('sort', [
+            'items' => $parentItems,
+        ]);
     }
 }

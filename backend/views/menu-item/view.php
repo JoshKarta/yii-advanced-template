@@ -1,18 +1,25 @@
 <?php
 
+use yii\helpers\Url;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\MenuItem */
 ?>
 <div class="menu-item-view">
- 
+
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
             'id',
             'label',
-            'url:url',
+            [
+                'attribute' => 'url',
+                'format' => 'url',
+                'value' => function ($model) {
+                        return Url::to($model->url);
+                    }
+            ],
             'icon',
             'icon_type',
             'parent_id',

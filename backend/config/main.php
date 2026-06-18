@@ -10,6 +10,7 @@ $params = array_merge(
 return [
     'id' => 'app-backend',
     'basePath' => dirname(__DIR__),
+    'homeUrl' => '/backoffice',
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
     'modules' => [
@@ -19,7 +20,8 @@ return [
     ],
     'components' => [
         'request' => [
-            'csrfParam' => '_csrf-backend',
+            'baseUrl' => '/backoffice',
+            'csrfParam' => '_csrf-backend'
         ],
         'user' => [
             'identityClass' => \common\models\User::class,

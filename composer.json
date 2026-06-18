@@ -28,7 +28,8 @@
     "kartik-v/yii2-widget-select2": "^2.2",
     "kartik-v/yii2-widget-switchinput": "dev-master",
     "kartik-v/yii2-widget-datepicker": "@dev",
-    "kartik-v/yii2-widget-activeform": "dev-master"
+    "kartik-v/yii2-widget-activeform": "dev-master",
+    "yiisoft/yii2-jui": "^2.0"
   },
   "require-dev": {
     "codeception/c3": "^2.8",

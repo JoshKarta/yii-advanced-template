@@ -103,4 +103,41 @@ class MenuItem extends \yii\db\ActiveRecord
         return $this->hasOne(MenuItem::class, ['id' => 'parent_id']);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+
+        // If this is a new record and sort_order is not set
+        if ($insert && empty($this->sort_order)) {
+            // Get the highest sort_order value and add 1
+            $maxOrder = self::find()->max('sort_order');
+            $this->sort_order = $maxOrder ? $maxOrder + 1 : 1;
+        }
+
+        // Add "/" prefix to url if it's not empty and doesn't already have one
+        // if ($this->url && !str_starts_with($this->url, '/')) {
+        //     $this->url = '/' . $this->url;
+        // }
+
+        return true;
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+        Yii::$app->cache->delete('menu_items_backend');
+        Yii::$app->cache->delete('menu_items_frontend');
+    }
+
+    public function afterDelete()
+    {
+        parent::afterDelete();
+        Yii::$app->cache->delete('menu_items_backend');
+        Yii::$app->cache->delete('menu_items_frontend');
+    }
 }

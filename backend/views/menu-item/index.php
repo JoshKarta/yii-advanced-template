@@ -33,6 +33,11 @@ CrudAsset::register($this);
                             ['role' => 'modal-remote', 'title' => Yii::t('yii2-ajaxcrud', 'Create New') . ' Menu Items', 'class' => 'btn btn-outline-primary']
                         ) .
                         Html::a(
+                            '<i class="fas fa-sort"></i>',
+                            ['sort'],
+                            ['title' => 'Sort Menu Items', 'class' => 'btn btn-outline-info']
+                        ) .
+                        Html::a(
                             '<i class="fa fa-redo"></i>',
                             [''],
                             ['data-pjax' => 1, 'class' => 'btn btn-outline-success', 'title' => Yii::t('yii2-ajaxcrud', 'Reset Grid')]
