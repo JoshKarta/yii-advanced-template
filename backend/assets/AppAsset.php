@@ -41,6 +41,5 @@ class AppAsset extends AssetBundle
         ColorModeAsset::class,
         'yii\web\JqueryAsset',
         'yii\jui\JuiAsset',
-        SortableAsset::class
     ];
 }

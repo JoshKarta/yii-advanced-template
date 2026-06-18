@@ -3,8 +3,8 @@
 /* @var $this \yii\web\View */
 /* @var $content string */
 
+use backend\assets\AppAsset;
 use yii\helpers\Html;
-use frontend\assets\AppAsset;
 
 AppAsset::register($this);
 \hail812\adminlte3\assets\FontAwesomeAsset::register($this);
