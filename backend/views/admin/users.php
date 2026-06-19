@@ -81,7 +81,7 @@ $this->title = 'Manage Users';
                                 \common\models\User::STATUS_INACTIVE => 'Inactive',
                             ],
                             'options' => ['placeholder' => 'Select status'],
-                            'pluginOptions' => ['allowClear' => false],
+                            'pluginOptions' => ['allowClear' => false, 'dropdownParent' => '#user-modal'],
                         ]); ?>
                     </div>
                     <div class="form-group">
@@ -91,7 +91,7 @@ $this->title = 'Manage Users';
                             'id' => 'user-role',
                             'data' => $roleList,
                             'options' => ['placeholder' => 'Select a role'],
-                            'pluginOptions' => ['allowClear' => true],
+                            'pluginOptions' => ['allowClear' => true, 'dropdownParent' => '#user-modal'],
                         ]); ?>
                     </div>
                 </form>
