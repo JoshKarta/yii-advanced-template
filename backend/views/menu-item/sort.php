@@ -6,17 +6,16 @@ use yii\helpers\Html;
 use yii\web\View;
 use yii\jui\JuiAsset;
 
-// Register jQuery UI
 JuiAsset::register($this);
 $this->registerJsFile(
     'https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
 );
+
 $this->title = 'Sort Menu Items';
 $this->params['breadcrumbs'][] = ['label' => 'Menu Items', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
-// --- Build the same tree as the sidebar (but for all items) ---
 function buildTreeForSort($items, $parentId = null)
 {
     $result = [];
@@ -34,26 +33,19 @@ function buildTreeForSort($items, $parentId = null)
     return $result;
 }
 
-// Fetch all items (you may want to filter by location or visibility)
 $allItems = MenuItem::find()
-    // ->where(['visible' => 1]) // uncomment if you want only visible items
     ->orderBy(['sort_order' => SORT_ASC, 'id' => SORT_ASC])
     ->all();
 
 $tree = buildTreeForSort($allItems);
-
-// Define the update URL
 $updateOrderUrl = Url::to(['update-order']);
 
-// Helper to render a single item recursively
 function renderSortItem($node, $depth = 0)
 {
-    $indent = str_repeat('&nbsp;&nbsp;&nbsp;', $depth);
     $icon = !empty($node['icon']) ? '<i data-lucide="' . $node['icon'] . '" style="width:18px;height:18px;" class="me-2"></i>' : '';
-    $html = '<div class="list-group-item sort-item" data-id="' . $node['id'] . '" style="padding-left: ' . (20 + $depth * 20) . 'px;">';
+    $html = '<div class="sort-item" data-id="' . $node['id'] . '" style="padding-left: ' . (20 + $depth * 20) . 'px;">';
     $html .= '<span class="drag-handle"><i class="fas fa-grip-vertical text-muted me-2"></i></span>';
     $html .= $icon . Html::encode($node['label']);
-    $html .= '</div>';
 
     if (!empty($node['children'])) {
         $html .= '<div class="children-container" data-parent="' . $node['id'] . '">';
@@ -63,6 +55,7 @@ function renderSortItem($node, $depth = 0)
         $html .= '</div>';
     }
 
+    $html .= '</div>';
     return $html;
 }
 ?>
@@ -81,14 +74,19 @@ function renderSortItem($node, $depth = 0)
             <p class="text-muted">Drag items to change order or nest them under other items. Drop an item onto another
                 to make it a child.</p>
             <div id="sortable-root" class="list-group">
-                <?php foreach ($tree as $rootNode): ?>
-                    <?= renderSortItem($rootNode, 0) ?>
-                <?php endforeach; ?>
+                <?php if (empty($tree)): ?>
+                    <div class="alert alert-info">No menu items found.</div>
+                <?php else: ?>
+                    <?php foreach ($tree as $rootNode): ?>
+                        <?= renderSortItem($rootNode, 0) ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </div>
         </div>
         <div class="card-footer">
-            <a href="<?= Url::to(['index']) ?>" class="btn btn-outline-secondary rounded-3"><i
-                    class="fas fa-angle-left me-1"></i> Back to list</a>
+            <a href="<?= Url::to(['index']) ?>" class="btn btn-outline-secondary rounded-3">
+                <i class="fas fa-angle-left me-1"></i> Back to list
+            </a>
         </div>
     </div>
 </div>
@@ -102,6 +100,8 @@ $css = <<<CSS
         margin-bottom: 2px;
         border-radius: 4px;
         transition: background 0.2s;
+        padding: 6px 10px;
+        background: #fff;
     }
     .sort-item:hover {
         background: #f8f9fa;
@@ -115,7 +115,8 @@ $css = <<<CSS
     .children-container {
         margin-left: 20px;
         border-left: 2px dashed #dee2e6;
-        padding-left: 0;
+        padding-left: 10px;
+        margin-top: 4px;
     }
     .children-container .sort-item {
         margin-left: 0;
@@ -144,7 +145,6 @@ $css = <<<CSS
 CSS;
 
 $js = <<<JS
-    // Initialize Lucide icons (if used)
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
     }
@@ -153,9 +153,8 @@ $js = <<<JS
         let structure = [];
         let order = 0;
 
-        // Process all sort items recursively
-        function processItem(element, parentId = null) {
-            const id = parseInt($(element).data('id'));
+        function processItem(\$item, parentId = null) {
+            const id = parseInt(\$item.data('id'));
             order++;
             structure.push({
                 id: id,
@@ -163,24 +162,21 @@ $js = <<<JS
                 sort_order: order
             });
 
-            // Find the children container immediately after this item
-            const container = $(element).next('.children-container');
-            if (container.length) {
-                container.find('> .sort-item').each(function() {
-                    processItem(this, id);
+            const \$childrenContainer = \$item.children('.children-container');
+            if (\$childrenContainer.length) {
+                \$childrenContainer.children('.sort-item').each(function() {
+                    processItem(\$(this), id);
                 });
             }
         }
 
-        // Start from root items
-        $('#sortable-root > .sort-item').each(function() {
-            processItem(this, null);
+        $('#sortable-root').children('.sort-item').each(function() {
+            processItem(\$(this), null);
         });
 
         return structure;
     }
 
-    // Make sortable
     $('#sortable-root, .children-container').sortable({
         cursor: 'move',
         placeholder: 'placeholder',
@@ -189,11 +185,8 @@ $js = <<<JS
         handle: '.drag-handle',
         items: '> .sort-item',
         update: function(event, ui) {
-            // Only trigger when the item is dropped into a new container
             if (this === ui.item.parent()[0]) {
                 const structure = getMenuStructure();
-
-                // Show loading
                 $('.card-body').addClass('loading-overlay');
 
                 $.ajax({
