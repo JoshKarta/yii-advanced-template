@@ -5,6 +5,7 @@ namespace backend\controllers;
 use Yii;
 use common\models\MenuItem;
 use common\models\search\MenuItemSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -22,6 +23,26 @@ class MenuItemController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    // 1. Admin role – allows everything (no actions specified = all actions)
+                    [
+                        'allow' => true,
+                        'roles' => ['admin'], // 'admin' is the role name
+                    ],
+                    // 2. Then your normal permission rules
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'view'],
+                        'permissions' => ['/menu-item/index'], // route as permission
+                    ],
+                    // 3. Deny everything else
+                    [
+                        'allow' => false,
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
