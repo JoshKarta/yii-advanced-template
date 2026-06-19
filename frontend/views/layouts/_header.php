@@ -22,6 +22,10 @@ $items = [
         'url' => ['/site/contact'],
     ],
     [
+        'label' => 'Backoffice',
+        'url' => ['/backoffice'],
+    ],
+    [
         'label' => 'Signup',
         'url' => ['/site/signup'],
         'visible' => Yii::$app->user->isGuest,
