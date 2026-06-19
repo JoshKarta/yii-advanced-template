@@ -7,6 +7,29 @@ use yii\web\Response;
 
 class AdminController extends \yii\web\Controller
 {
+
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => \yii\filters\AccessControl::class,
+                'rules' => [
+                    // Admin role can do anything
+                    [
+                        'allow' => true,
+                        'roles' => ['admin'],
+                    ],
+                    // For other users, we could add additional rules, 
+                    // but you're using dynamic permission checks in actions,
+                    // so we can just deny everything else by default.
+                    // [
+                    //     'allow' => false,
+                    // ],
+                ],
+            ],
+        ];
+    }
+
     public function actionIndex()
     {
         return $this->render('index');
@@ -28,46 +51,6 @@ class AdminController extends \yii\web\Controller
         return $this->render('roles', [
             'roles' => $roles,
         ]);
-    }
-
-    /**
-     * AJAX: Create role via modal
-     */
-    public function actionAjaxCreateRole()
-    {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $auth = Yii::$app->authManager;
-
-        $name = trim(Yii::$app->request->post('name'));
-        $description = trim(Yii::$app->request->post('description'));
-
-        if (!$name) {
-            return ['success' => false, 'message' => 'Role name cannot be empty.'];
-        }
-
-        if (!preg_match('/^[a-z_]+$/', $name)) {
-            return ['success' => false, 'message' => 'Role name can only contain lowercase letters and underscores.'];
-        }
-
-        if ($auth->getRole($name)) {
-            return ['success' => false, 'message' => 'Role "' . $name . '" already exists.'];
-        }
-
-        $role = $auth->createRole($name);
-        $role->description = $description;
-
-        if ($auth->add($role)) {
-            return [
-                'success' => true,
-                'message' => 'Role created successfully.',
-                'role' => [
-                    'name' => $role->name,
-                    'description' => $role->description
-                ]
-            ];
-        }
-
-        return ['success' => false, 'message' => 'Failed to create role.'];
     }
 
     /**
@@ -171,7 +154,49 @@ class AdminController extends \yii\web\Controller
             }
         }
 
+        // Invalidate cache
+        Yii::$app->routeService->clearRoleRoutesCache($roleName);
         return ['success' => true, 'message' => 'Assignments saved successfully.'];
+    }
+
+    /**
+     * AJAX: Create role via modal
+     */
+    public function actionAjaxCreateRole()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $auth = Yii::$app->authManager;
+
+        $name = trim(Yii::$app->request->post('name'));
+        $description = trim(Yii::$app->request->post('description'));
+
+        if (!$name) {
+            return ['success' => false, 'message' => 'Role name cannot be empty.'];
+        }
+
+        if (!preg_match('/^[a-z_]+$/', $name)) {
+            return ['success' => false, 'message' => 'Role name can only contain lowercase letters and underscores.'];
+        }
+
+        if ($auth->getRole($name)) {
+            return ['success' => false, 'message' => 'Role "' . $name . '" already exists.'];
+        }
+
+        $role = $auth->createRole($name);
+        $role->description = $description;
+
+        if ($auth->add($role)) {
+            return [
+                'success' => true,
+                'message' => 'Role created successfully.',
+                'role' => [
+                    'name' => $role->name,
+                    'description' => $role->description
+                ]
+            ];
+        }
+
+        return ['success' => false, 'message' => 'Failed to create role.'];
     }
 
     /**
@@ -187,6 +212,9 @@ class AdminController extends \yii\web\Controller
         if (!$role) {
             return ['success' => false, 'message' => 'Role not found.'];
         }
+
+        // Invalidate cache
+        Yii::$app->routeService->clearRoleRoutesCache($role);
 
         // Remove all children and assignments first? Yii's remove() does that automatically.
         if ($auth->remove($role)) {
@@ -245,6 +273,9 @@ class AdminController extends \yii\web\Controller
             // Remove old role
             $auth->remove($role);
 
+            // Invalidate cache
+            Yii::$app->routeService->clearRoleRoutesCache($newName);
+
             return ['success' => true, 'message' => 'Role updated.'];
         } else {
             // Just update description
@@ -254,6 +285,14 @@ class AdminController extends \yii\web\Controller
             }
             return ['success' => false, 'message' => 'Failed to update role.'];
         }
+    }
+
+    public function actionRescanRoutes()
+    {
+        Yii::$app->routeService->clearCache();
+        $added = Yii::$app->routeService->syncRoutesToDb();
+        Yii::$app->session->setFlash('success', "Rescanned: $added new routes added.");
+        return $this->redirect(['permissions']);
     }
 
     public function actionListRoutes()

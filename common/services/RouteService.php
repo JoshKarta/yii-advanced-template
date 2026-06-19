@@ -186,4 +186,47 @@ class RouteService extends Component
 
         return $added;
     }
+
+    /**
+     * Get all assigned routes (permissions) for a role, with caching.
+     * @param string $roleName
+     * @return array
+     */
+    public function getRoleRoutes($roleName)
+    {
+        $cacheKey = 'role-routes-' . $roleName;
+        $routes = Yii::$app->cache->get($cacheKey);
+        if ($routes === false) {
+            $auth = Yii::$app->authManager;
+            $permissions = $auth->getPermissionsByRole($roleName);
+            $routes = array_keys($permissions);
+            sort($routes);
+            Yii::$app->cache->set($cacheKey, $routes, 3600); // 1 hour
+        }
+        return $routes;
+    }
+
+    /**
+     * Clear role routes cache (call after any assignment change).
+     */
+    public function clearRoleRoutesCache($roleName = null)
+    {
+        if ($roleName !== null) {
+            Yii::$app->cache->delete('role-routes-' . $roleName);
+        } else {
+            // Clear all role caches – you might iterate over all roles
+            $auth = Yii::$app->authManager;
+            foreach ($auth->getRoles() as $role) {
+                Yii::$app->cache->delete('role-routes-' . $role->name);
+            }
+        }
+    }
+
+    public function actionRescanRoutes()
+    {
+        Yii::$app->routeService->clearCache();
+        $added = Yii::$app->routeService->syncRoutesToDb();
+        Yii::$app->session->setFlash('success', "Rescanned: $added new routes added.");
+        return $this->redirect(['permissions']);
+    }
 }

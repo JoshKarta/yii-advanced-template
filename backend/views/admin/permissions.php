@@ -41,9 +41,18 @@ $this->registerCssFile('https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetal
 <div class="assign-routes-to-role">
     <div class="card rounded-4">
         <div class="drag-drop-container card-body" style="padding: 20px;">
-            <h3 style="color: #198754;"><i class="fas fa-link"></i> Assign URL Routes to Role</h3>
-            <p class="text-muted">Select a role, then drag routes between lists.</p>
-            <hr>
+            <div class="row">
+                <div class="div col-md-8">
+                    <h3 style="color: #198754;"><i class="fas fa-link"></i> Assign URL Routes to Role</h3>
+                    <p class="text-muted">Select a role, then drag routes between lists.</p>
+                    <hr>
+                </div>
+                <div class="mb-3 col-md-4 float-right">
+                    <a href="<?= Url::to(['rescan-routes']) ?>" class="btn btn-warning rounded-3">
+                        <i class="fas fa-sync"></i> Rescan Routes
+                    </a>
+                </div>
+            </div>
 
             <div class="row">
                 <div class="col-md-6">
@@ -85,7 +94,8 @@ $this->registerCssFile('https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetal
                     </div>
                 </div>
                 <div class="text-center" style="margin-top: 20px;">
-                    <button id="save-assignments" class="btn btn-modern" disabled><i class="fas fa-save"></i> Save
+                    <button id="save-assignments" class="btn btn-outline-primary rounded-3" disabled><i
+                            class="fas fa-save"></i> Save
                         Assignments</button>
                 </div>
             </div>
