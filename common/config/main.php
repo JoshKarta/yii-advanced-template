@@ -21,5 +21,8 @@ return [
             // Uncomment to enable caching and improve authorization speed
             // 'cache' => 'cache',
         ],
+        'routeService' => [
+            'class' => 'common\services\RouteService',
+        ],
     ],
 ];

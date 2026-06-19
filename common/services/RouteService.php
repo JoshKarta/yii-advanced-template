@@ -159,4 +159,31 @@ class RouteService extends Component
         $result = preg_replace('/([a-z0-9])([A-Z])/', '$1-$2', $input);
         return strtolower($result);
     }
+
+    /**
+     * Sync all scanned routes with the RBAC permission items.
+     * Creates new permissions for routes that don't exist yet.
+     * @return int Number of newly added permissions
+     */
+    public function syncRoutesToDb()
+    {
+        $auth = Yii::$app->authManager;
+        $routes = $this->getAllRoutes(); // uses cache
+        $added = 0;
+
+        foreach ($routes as $route) {
+            // Use the route string as permission name
+            if ($auth->getPermission($route) === null) {
+                $permission = $auth->createPermission($route);
+                $permission->description = 'Route: ' . $route;
+                $auth->add($permission);
+                $added++;
+            }
+        }
+
+        // Optionally, you could remove permissions that no longer exist in scanned routes,
+        // but that might break existing assignments. We'll only add new ones.
+
+        return $added;
+    }
 }
