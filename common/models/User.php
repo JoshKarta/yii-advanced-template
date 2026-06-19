@@ -215,4 +215,18 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $this->password_reset_token = null;
     }
+
+    /**
+     * Returns the first role assigned to the user (assuming one role per user).
+     * @return string|null
+     */
+    public function getRoleName()
+    {
+        $auth = Yii::$app->authManager;
+        $roles = $auth->getRolesByUser($this->id);
+        if (empty($roles)) {
+            return null;
+        }
+        return reset($roles)->name; // return the first role name
+    }
 }
