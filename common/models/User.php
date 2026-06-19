@@ -27,6 +27,7 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+    public $password; // used for form input, not stored in DB
     public const STATUS_DELETED = 0;
     public const STATUS_INACTIVE = 9;
     public const STATUS_ACTIVE = 10;
@@ -51,11 +52,27 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * {@inheritdoc}
      */
+    /**
+     * {@inheritdoc}
+     */
     public function rules(): array
     {
         return [
+            // Required fields
+            [['username', 'email', 'status'], 'required'],
+            // String length
+            [['username', 'email'], 'string', 'max' => 255],
+            // Uniqueness
+            [['username', 'email'], 'unique'],
+            // Email format
+            ['email', 'email'],
+            // Status default & allowed values
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+            // Password (virtual attribute) – allow it to be mass‑assigned, but not stored
+            ['password', 'safe'],
+            // Optional: enforce minimum length on password (not required because we handle it manually)
+            // ['password', 'string', 'min' => 6],
         ];
     }
 
@@ -228,5 +245,19 @@ class User extends ActiveRecord implements IdentityInterface
             return null;
         }
         return reset($roles)->name; // return the first role name
+    }
+
+    /**
+     * Returns the status label as an HTML badge.
+     * @return string
+     */
+    public function getStatusLabel(): string
+    {
+        $labels = [
+            self::STATUS_ACTIVE => '<span class="badge bg-success">Active</span>',
+            self::STATUS_INACTIVE => '<span class="badge bg-warning">Inactive</span>',
+            self::STATUS_DELETED => '<span class="badge bg-danger">Deleted</span>',
+        ];
+        return $labels[$this->status] ?? (string) $this->status;
     }
 }
