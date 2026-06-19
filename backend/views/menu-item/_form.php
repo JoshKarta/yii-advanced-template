@@ -56,7 +56,11 @@ $parentItems = \common\models\MenuItem::find()
             <?= $form->field($model, 'icon')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-md-4">
-            <?= $form->field($model, 'icon_type')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'icon_type')->dropDownList([
+                'fas' => 'Solid (fas)',
+                'far' => 'Regular (far)',
+                'fab' => 'Brands (fab)',
+            ], ['prompt' => 'Select icon style']) ?>
         </div>
         <div class="col-md-4">
             <?= $form->field($model, 'target')->dropDownList([
@@ -88,13 +92,13 @@ $parentItems = \common\models\MenuItem::find()
     </div>
 
     <?php /* echo $form->field($model, 'visible_to_roles')->widget(Select2::class, [
-   'data' => ArrayHelper::map(Role::find()->all(), 'id', 'name'), // Replace `name` with your display column
-   'options' => ['multiple' => true],
-   'pluginOptions' => [
-   'allowClear' => true,
-   'placeholder' => 'Select roles...',
-   ],
-   ]); */ ?>
+'data' => ArrayHelper::map(Role::find()->all(), 'id', 'name'), // Replace `name` with your display column
+'options' => ['multiple' => true],
+'pluginOptions' => [
+'allowClear' => true,
+'placeholder' => 'Select roles...',
+],
+]); */ ?>
 
     <?php ActiveForm::end(); ?>
 

@@ -12,7 +12,7 @@ $currentLocation = ($appId === 'app-backend') ? 'backend' : 'frontend';
 $cacheKey = 'menu_items_' . $currentLocation;
 
 /**
- * Recursively build the nested menu tree.
+ * Recursively build the nested menu tree (without active flags).
  */
 function buildMenuTree($items, $parentId = null, $currentLocation = null)
 {
@@ -38,16 +38,24 @@ function buildMenuTree($items, $parentId = null, $currentLocation = null)
                 'icon' => $item->icon ?: null,
             ];
 
+            // Apply icon style if provided
+            if ($item->icon_type) {
+                $menuNode['iconStyle'] = $item->icon_type;
+            }
+
             if ($item->heading) {
-                // This is a header (section title)
                 $menuNode['header'] = true;
             } else {
                 // Generate the proper URL for the current application context
-                // Url::to() will respect the application's base URL and routing rules
                 if ($item->url == '/') {
-                    $menuNode['url'] = Url::home();      // respects Yii::$app->homeUrl
+                    $menuNode['url'] = Url::home();
                 } elseif ($item->url) {
-                    $menuNode['url'] = $currentLocation == "backend" ? Yii::$app->request->baseUrl . '/index.php?r=' . ltrim($item->url, '/') : Url::to('/' . ltrim($item->url, '/'));
+                    // For backend, build the URL with index.php?r=
+                    if ($currentLocation == 'backend') {
+                        $menuNode['url'] = Yii::$app->request->baseUrl . '/index.php?r=' . ltrim($item->url, '/');
+                    } else {
+                        $menuNode['url'] = Url::to('/' . ltrim($item->url, '/'));
+                    }
                 } else {
                     $menuNode['url'] = '#';
                 }
@@ -55,11 +63,6 @@ function buildMenuTree($items, $parentId = null, $currentLocation = null)
                 // Add target if set
                 if ($item->target) {
                     $menuNode['linkOptions'] = ['target' => $item->target];
-                }
-
-                // Map icon_type (e.g., 'far', 'fas') to the widget's 'iconStyle'
-                if ($item->icon_type) {
-                    $menuNode['iconStyle'] = $item->icon_type;
                 }
             }
 
@@ -95,8 +98,41 @@ if ($menuItems === false) {
     // Cache for 1 hour (or you can use a database dependency for automatic invalidation)
     Yii::$app->cache->set($cacheKey, $menuItems, 3600);
 }
-?>
 
+// --- MANUALLY SET ACTIVE STATE AFTER CACHE ---
+$currentRoute = Yii::$app->request->get('r', 'site/index'); // e.g. 'menu-item/index'
+
+/**
+ * Recursively set the 'active' flag for the item whose URL matches the current route.
+ */
+function setActiveRecursive(&$items, $currentRoute)
+{
+    foreach ($items as &$item) {
+        if (isset($item['url']) && is_string($item['url'])) {
+            // Extract the 'r' parameter from the URL (e.g. 'menu-item')
+            parse_str(parse_url($item['url'], PHP_URL_QUERY) ?: '', $params);
+            $itemRoute = $params['r'] ?? null;
+
+            // Also handle home URL (Url::home()) – compare directly with current URL
+            if ($item['url'] == Url::home()) {
+                $homeRoute = Yii::$app->request->get('r', 'site/index');
+                if ($homeRoute == 'site/index' && Yii::$app->request->url == Url::home()) {
+                    $item['active'] = true;
+                }
+            } elseif ($itemRoute && $itemRoute == $currentRoute) {
+                $item['active'] = true;
+            }
+        }
+
+        // Recurse into children
+        if (isset($item['items'])) {
+            setActiveRecursive($item['items'], $currentRoute);
+        }
+    }
+}
+
+setActiveRecursive($menuItems, $currentRoute);
+?>
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
@@ -123,6 +159,7 @@ if ($menuItems === false) {
             <?php
             echo \hail812\adminlte\widgets\Menu::widget([
                 'items' => $menuItems,
+                'activateItems' => false, // Disable automatic detection – we use manual flags
             ]);
             ?>
         </nav>
