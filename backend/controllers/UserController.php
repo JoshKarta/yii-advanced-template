@@ -25,10 +25,20 @@ class UserController extends Controller
             'access' => [
                 'class' => \yii\filters\AccessControl::class,
                 'rules' => [
-                    // Admin role can do anything
+                    // 1. Admin role – allows everything (no actions specified = all actions)
                     [
                         'allow' => true,
-                        'roles' => ['admin'],
+                        'roles' => ['admin'], // 'admin' is the role name
+                    ],
+                    // 2. Then your normal permission rules
+                    [
+                        'allow' => true,
+                        'actions' => ['profile', 'update'],
+                        'permissions' => ['/user/profile', 'user/update'], // route as permission
+                    ],
+                    // 3. Deny everything else
+                    [
+                        'allow' => false,
                     ],
                 ],
             ],
