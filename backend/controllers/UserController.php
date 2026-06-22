@@ -324,7 +324,8 @@ class UserController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = User::findOne($id)) !== null) {
+        $hashId = Yii::$app->hashId->decode($id);
+        if (($model = User::findOne($hashId)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -340,5 +341,39 @@ class UserController extends Controller
             $list[$role->name] = $role->name . ' - ' . $role->description;
         }
         return $list;
+    }
+
+    /**
+     * Displays the user profile.
+     * If $hash is null, shows the currently logged-in user.
+     *
+     * @param string|null $hash
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionProfile($hash = null)
+    {
+        if ($hash === null) {
+            $user = Yii::$app->user->identity;
+        } else {
+            $id = Yii::$app->hashId->decode($hash);
+            if ($id === null) {
+                throw new NotFoundHttpException('User not found.');
+            }
+            $user = User::findOne($id);
+            if (!$user) {
+                throw new NotFoundHttpException('User not found.');
+            }
+
+            // Authorization: only admins or the user themselves can view
+            $isAdmin = Yii::$app->user->can('admin');
+            if (!$isAdmin && $user->id != Yii::$app->user->id) {
+                throw new NotFoundHttpException('You are not allowed to view this profile.');
+            }
+        }
+
+        return $this->render('profile', [
+            'user' => $user,
+        ]);
     }
 }

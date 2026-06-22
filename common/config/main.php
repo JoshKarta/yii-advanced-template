@@ -12,6 +12,9 @@ return [
     ],
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'components' => [
+        'hashId' => [
+            'class' => 'common\components\HashId',
+        ],
         'cache' => [
             'class' => \yii\caching\FileCache::class,
         ],

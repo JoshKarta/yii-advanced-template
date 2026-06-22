@@ -12,6 +12,7 @@ $buttonClass = $widget->buttonClass;
 $menuClass = $widget->menuClass;
 $showAvatar = $widget->showAvatar;
 $showName = $widget->showName;
+$hashedId = Yii::$app->hashId->encode(Yii::$app->user->id);
 ?>
 
 <div class="user-menu-widget">
@@ -34,7 +35,7 @@ $showName = $widget->showName;
             ],
             [
                 'label' => '<i class="fas fa-user me-2"></i> Profile',
-                'url' => ['site/profile'],
+                'url' => ['user/profile', 'id' => $hashedId],
             ],
         ];
 
