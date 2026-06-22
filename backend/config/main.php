@@ -16,6 +16,15 @@ return [
     'modules' => [
         'gridview' => [
             'class' => '\kartik\grid\Module'
+        ],
+        'audit' => [
+            'class' => 'bedezign\yii2\audit\Audit',
+            'userIdentifierCallback' => [
+                'common\models\User',
+                'userIdentifierCallback'
+            ],
+            'maxAge' => 30,
+            'layout' => 'main',
         ]
     ],
     'components' => [

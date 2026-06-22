@@ -8,6 +8,7 @@ use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\helpers\Html;
 use yii\web\IdentityInterface;
 
 /**
@@ -259,5 +260,15 @@ class User extends ActiveRecord implements IdentityInterface
             self::STATUS_DELETED => '<span class="badge bg-danger">Deleted</span>',
         ];
         return $labels[$this->status] ?? (string) $this->status;
+    }
+
+    /**
+     * @param string $id user_id from audit_entry table
+     * @return mixed|string
+     */
+    public static function userIdentifierCallback($id)
+    {
+        $user = self::findOne($id);
+        return $user ? Html::a($user->username, ['/user/admin/update', 'id' => $user->id]) : $id;
     }
 }
