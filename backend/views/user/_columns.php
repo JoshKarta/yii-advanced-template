@@ -45,7 +45,8 @@ return [
         'template' => '{view} {update} {delete}',
         'vAlign' => 'middle',
         'urlCreator' => function ($action, $model, $key, $index) {
-            return Url::to([$action, 'id' => $key]);
+            $hashedId = Yii::$app->hashId->encode($model->id);
+            return Url::to([$action, 'id' => $hashedId]);
         },
         'viewOptions' => ['role' => 'modal-remote', 'title' => Yii::t('yii2-ajaxcrud', 'View'), 'data-toggle' => 'tooltip', 'class' => 'btn btn-sm btn-outline-success'],
         'updateOptions' => ['role' => 'modal-remote', 'title' => Yii::t('yii2-ajaxcrud', 'Update'), 'data-toggle' => 'tooltip', 'class' => 'btn btn-sm btn-outline-primary'],
