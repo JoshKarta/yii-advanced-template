@@ -108,6 +108,10 @@ a.desc:after {
   justify-content: center;
 }
 
+.form-control {
+  border-radius: 10px !important;
+}
+
 .login-split-card .input-group .form-control {
   border: 0;
   background: transparent;
